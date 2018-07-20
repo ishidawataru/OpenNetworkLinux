@@ -986,9 +986,13 @@ class OnlPackageManager(object):
         for pg in self.package_groups:
             if pkg is None or pkg in pg:
                 products = pg.clean(dir_=dir_)
-                if self.opr:
-                    # Remove results from our repo
-                    self.opr.remove_packages(products)
+#                if self.opr:
+#                    # Remove results from our repo
+#                    self.opr.remove_packages(products)
+
+    def rebuild(self, pkg=None, dir_=None):
+        self.clean(pkg, dir_)
+        self.build(pkg, dir_)
 
     def require(self, pkg, force=False, build_missing=False, skip_missing=False,
                 try_arches=None):
@@ -1158,6 +1162,7 @@ if __name__ == '__main__':
     ap.add_argument("--copy-file", nargs=3, metavar=('PACKAGE', 'FILE', 'DST'), action='append')
     ap.add_argument("--build", nargs='+', metavar='PACKAGE')
     ap.add_argument("--clean", nargs='+', metavar='PACKAGE')
+    ap.add_argument("--rebuild", nargs='+', metavar='PACKAGE')
     ap.add_argument("--require", nargs='+', metavar='PACKAGE')
     ap.add_argument("--no-build-missing", action='store_true')
     ap.add_argument("--contents", nargs='+', metavar='PACKAGE')
@@ -1277,7 +1282,7 @@ if __name__ == '__main__':
         #
         ############################################################
         if ops.clean:
-            raise OnlPackageError("Clean not implemented yet.")
+#            raise OnlPackageError("Clean not implemented yet.")
             for p in ops.clean:
                 if p in pm:
                     pm.clean(p)
@@ -1288,6 +1293,13 @@ if __name__ == '__main__':
             for p in ops.build:
                 if p in pm:
                     pm.build(p)
+                else:
+                    raise OnlPackageMissingError(p)
+
+        if ops.rebuild:
+            for p in ops.rebuild:
+                if p in pm:
+                    pm.rebuild(p)
                 else:
                     raise OnlPackageMissingError(p)
 
