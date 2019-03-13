@@ -191,6 +191,8 @@ mbuild: build
 ifeq ($(ARCH), powerpc)
 	$(foreach f,$(MODSYNCKEEP), cp $(K_SOURCE_DIR)/$(f) $(K_MBUILD_DIR)/$(f) || true;)
 endif
+	cp $(K_SOURCE_DIR)/scripts/recordmcount.c $(K_MBUILD_DIR)/scripts
+
 
 dtbs: mbuild
 ifdef DTS_LIST
